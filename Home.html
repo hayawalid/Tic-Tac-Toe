@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="hHstyle.css">
+</head>
+<body>
+    <section class="bg">
+        <div class="home">
+            <h1>Welcome to Tic Tac Toe!</h1>    
+            <button class="btn" id="playWithFriends">Play with Friends</button>
+            <button class="btn" id="playAgainstComputer">Play Against Computer</button>
+        </div>
+    </section>
+
+    <script>
+        var images = ["images/img1.jpg", "images/img4.jpg", "images/img6.jpg", "images/img7.jpg", "images/img8.jpg", "images/img9.jpg", "images/img10.jpg"]; // Add more image URLs as needed
+        var currentIndex = 0;
+
+        function changeBackground() {
+            document.querySelector('.bg').style.backgroundImage = 'url("' + images[currentIndex] + '")';
+            currentIndex = (currentIndex + 1) % images.length;
+        }
+
+        setInterval(changeBackground, 3000); 
+        
+
+        document.getElementById("playWithFriends").addEventListener("click", function() {
+            window.location.href="TTT.html"; 
+        });
+
+        document.getElementById("playAgainstComputer").addEventListener("click", function() {
+            window.location.href = "comp.html"; 
+        });
+    </script>
+</body>
+</html>

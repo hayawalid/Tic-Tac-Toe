@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="hHstyle.css">
+    <title>Document</title>
+</head>
+<body>
+    <section class="bg">
+        <div class="home"> 
+            <table id="game-board">
+                <tr>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                </tr>
+                <tr>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                </tr>
+                <tr>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                </tr>
+            </table>
+            
+            <p id="winner-message"></p>
+            <p>Computer Score: <span id="computer-score">0</span></p>
+            <p>User Score: <span id="user-score">0</span></p>
+            <p id="game-result"></p>
+        </div>
+    </section>
+    <script src="TTT.js"></script>
+    <script>
+        let currentPlayer = 'X';
+        let board = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
+        ];
+        function handleMove(event) {
+    if (currentPlayer === 'X') {
+        let cell = event.target;
+        let rowIndex = cell.parentNode.rowIndex;
+        let cellIndex = cell.cellIndex;
+
+        if (board[rowIndex][cellIndex] === '') {
+            cell.textContent = currentPlayer;
+            board[rowIndex][cellIndex] = currentPlayer;
+
+            if (checkWinner(currentPlayer)) {
+                document.getElementById('winner-message').textContent = currentPlayer + ' wins!';
+                if (currentPlayer === 'X') {
+                    updateScore('user-score');
+                } else {
+                    updateScore('computer-score');
+                }
+                document.getElementById('game-result').textContent = currentPlayer + ' wins!';
+                resetBoard();
+                setTimeout(clearMessage, 3000);
+                return;
+            }
+
+            if (checkDraw()) {
+                document.getElementById('winner-message').textContent = 'It\'s a draw!';
+                document.getElementById('game-result').textContent = 'It\'s a draw!';
+                resetBoard();
+                setTimeout(clearMessage, 3000);
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+            if (currentPlayer === 'O') {
+                setTimeout(computerMove, 500);
+            }
+        }
+    }
+}
+
+function clearMessage() {
+    document.getElementById('winner-message').textContent = '';
+    document.getElementById('game-result').textContent = '';
+}
+
+
+        function checkWinner(player) {
+            for (let i = 0; i < 3; i++) {
+                if ((board[i][0] === player && board[i][1] === player && board[i][2] === player) ||
+                    (board[0][i] === player && board[1][i] === player && board[2][i] === player)) {
+                    return true;
+                }
+            }
+            if ((board[0][0] === player && board[1][1] === player && board[2][2] === player) ||
+                (board[0][2] === player && board[1][1] === player && board[2][0] === player)) {
+                return true;
+            }
+            return false;
+        }
+
+        function checkDraw() {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (board[i][j] === '') {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function updateScore(scoreId) {
+            let scoreSpan = document.getElementById(scoreId);
+            scoreSpan.textContent = parseInt(scoreSpan.textContent) + 1;
+        }
+
+        function resetBoard() {
+            board = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+            document.getElementById('winner-message').textContent = '';
+            let cells = document.querySelectorAll('#game-board td');
+            cells.forEach(cell => cell.textContent = '');
+            currentPlayer = 'X';
+        }
+
+        function computerMove() {
+            let emptyCells = [];
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (board[i][j] === '') {
+                        emptyCells.push({row: i, col: j});
+                    }
+                }
+            }
+            let randomIndex = Math.floor(Math.random() * emptyCells.length);
+            let randomCell = emptyCells[randomIndex];
+            board[randomCell.row][randomCell.col] = 'O';
+            let cell = document.querySelector('#game-board tr:nth-child(' + (randomCell.row + 1) + ') td:nth-child(' + (randomCell.col + 1) + ')');
+            cell.textContent = 'O';
+
+            if (checkWinner('O')) {
+                document.getElementById('winner-message').textContent = 'Computer wins!';
+                updateScore('computer-score');
+                resetBoard();
+                return;
+            }
+
+            if (checkDraw()) {
+                document.getElementById('winner-message').textContent = 'It\'s a draw!';
+                resetBoard();
+                return;
+            }
+
+            currentPlayer = 'X';
+        }
+    </script>
+</body>
+</html>

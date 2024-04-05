@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="hHstyle.css">
+    <title>Document</title>
+</head>
+<body>
+    <section class="bg">
+        <div class="home"> 
+            <table id="game-board">
+                <tr>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                </tr>
+                <tr>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                </tr>
+                <tr>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                    <td onclick="handleMove(event)"></td>
+                </tr>
+            </table>
+            
+            <p id="winner-message"></p>
+            <p>Player X Score: <span id="player-x-score">0</span></p>
+            <p>Player O Score: <span id="player-o-score">0</span></p>
+            <p id="game-result"></p>
+        </div>
+    </section>
+    <script>
+        let currentPlayer = 'X';
+        let board = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
+        ];
+
+        function handleMove(event) {
+            let cell = event.target;
+            let rowIndex = cell.parentNode.rowIndex;
+            let cellIndex = cell.cellIndex;
+
+            if (board[rowIndex][cellIndex] === '') {
+                cell.textContent = currentPlayer;
+                board[rowIndex][cellIndex] = currentPlayer;
+
+                if (checkWinner(currentPlayer)) {
+                    document.getElementById('winner-message').textContent = currentPlayer + ' wins!';
+                    updateScore(currentPlayer);
+                    document.getElementById('game-result').textContent = currentPlayer + ' wins!';
+                    resetBoard();
+                    setTimeout(clearMessage, 3000);
+                } else if (checkDraw()) {
+                    document.getElementById('winner-message').textContent = 'It\'s a draw!';
+                    document.getElementById('game-result').textContent = 'It\'s a draw!';
+                    resetBoard();
+                    setTimeout(clearMessage, 3000);
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                }
+            }
+        }
+
+        function clearMessage() {
+            document.getElementById('winner-message').textContent = '';
+            document.getElementById('game-result').textContent = '';
+        }
+
+        function checkWinner(player) {
+            for (let i = 0; i < 3; i++) {
+                if ((board[i][0] === player && board[i][1] === player && board[i][2] === player) ||
+                    (board[0][i] === player && board[1][i] === player && board[2][i] === player)) {
+                    return true;
+                }
+            }
+            if ((board[0][0] === player && board[1][1] === player && board[2][2] === player) ||
+                (board[0][2] === player && board[1][1] === player && board[2][0] === player)) {
+                return true;
+            }
+            return false;
+        }
+
+        function checkDraw() {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (board[i][j] === '') {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function updateScore(player) {
+            let scoreSpan = player === 'X' ? document.getElementById('player-x-score') : document.getElementById('player-o-score');
+            scoreSpan.textContent = parseInt(scoreSpan.textContent) + 1;
+        }
+
+        function resetBoard() {
+            board = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+            let cells = document.querySelectorAll('#game-board td');
+            cells.forEach(cell => cell.textContent = '');
+            currentPlayer = 'X';
+        }
+    </script>
+</body>
+</html>
